@@ -1,16 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
 )
 
 func main() {
-	body, err := ioutil.ReadAll(os.Stdin)
-	if err != nil {
-		fmt.Println("err", err)
-		os.Exit(1)
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
 	}
-	fmt.Println(string(body))
 }
