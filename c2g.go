@@ -10,12 +10,12 @@ import (
 
 type Line struct {
 	Spacer string
-	Count  int
+	Count  uint64
 	Text   string
 }
 
 func main() {
-	var max int
+	var max uint64
 	lines := make([]Line, 0, 1024)
 
 	scanner := bufio.NewScanner(os.Stdin)
@@ -23,7 +23,7 @@ func main() {
 	for scanner.Scan() {
 		line := rep.FindSubmatch([]byte(scanner.Text()))
 		spacer := string(line[1])
-		count, err := strconv.Atoi(string(line[2]))
+		count, err := strconv.ParseUint(string(line[2]), 10, 64)
 		if err != nil {
 			fmt.Println("err", err)
 			os.Exit(1)
