@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 )
 
 func main() {
@@ -13,7 +14,11 @@ func main() {
 	for scanner.Scan() {
 		line := rep.FindSubmatch([]byte(scanner.Text()))
 		spacer := string(line[1])
-		count := line[2]
+		count, err := strconv.Atoi(string(line[2]))
+		if err != nil {
+			fmt.Println("err", err)
+			os.Exit(1)
+		}
 		text := string(line[3])
 
 		fmt.Println(spacer)
