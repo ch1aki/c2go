@@ -15,6 +15,7 @@ type Line struct {
 }
 
 func main() {
+	var max int
 	lines := make([]Line, 0, 1024)
 
 	scanner := bufio.NewScanner(os.Stdin)
@@ -30,7 +31,12 @@ func main() {
 		text := string(line[3])
 
 		lines = append(lines, Line{Spacer: spacer, Count: count, Text: text})
+
+		if count > max {
+			max = count
+		}
 	}
 
 	fmt.Println(lines)
+	fmt.Println(max)
 }
