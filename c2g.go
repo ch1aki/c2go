@@ -8,7 +8,15 @@ import (
 	"strconv"
 )
 
+type Line struct {
+	Spacer string
+	Count  int
+	Text   string
+}
+
 func main() {
+	lines := make([]Line, 0, 1024)
+
 	scanner := bufio.NewScanner(os.Stdin)
 	rep := regexp.MustCompile(`^(\s*)([0-9]+) (.*)$`)
 	for scanner.Scan() {
@@ -21,8 +29,8 @@ func main() {
 		}
 		text := string(line[3])
 
-		fmt.Println(spacer)
-		fmt.Println(count)
-		fmt.Println(text)
+		lines = append(lines, Line{Spacer: spacer, Count: count, Text: text})
 	}
+
+	fmt.Println(lines)
 }
