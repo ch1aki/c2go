@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 type Line struct {
@@ -37,6 +38,9 @@ func main() {
 		}
 	}
 
-	fmt.Println(lines)
-	fmt.Println(max)
+	for _, line := range lines {
+		bar_count := int(line.Count * 30 / max)
+		fmt.Printf("%s%d [%-30s] %s\n",
+			line.Spacer, line.Count, strings.Repeat("|", bar_count), line.Text)
+	}
 }
