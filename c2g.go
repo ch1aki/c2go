@@ -2,12 +2,23 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
+	"io"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
 )
+
+const (
+	ExitCodeOK = iota
+	ExitCodeParseFlagError
+)
+
+type CLI struct {
+	outStream, errStream io.Writer
+}
 
 type Line struct {
 	Spacer string
@@ -15,10 +26,23 @@ type Line struct {
 	Text   string
 }
 
-func main() {
+func (c *CLI) Run(args []string) int {
+	var version bool
+	flags := flag.NewFlagSet("c2g", flag.ContinueOnError)
+	flags.SetOutput(c.errStream)
+	flags.BoolVar(&version, "version", false, "Print version information and quit")
+
+	if err := flags.Parse(args[1:]); err != nil {
+		return ExitCodeParseFlagError
+	}
+
+	if version {
+		fmt.Fprintf(c.errStream, "c2g version %s\n", Version)
+		return ExitCodeOK
+	}
+
 	var max uint64
 	lines := make([]Line, 0, 1024)
-
 	scanner := bufio.NewScanner(os.Stdin)
 	rep := regexp.MustCompile(`^(\s*)([0-9]+) (.*)$`)
 	for scanner.Scan() {
@@ -43,4 +67,6 @@ func main() {
 		fmt.Printf("%s%d [%-30s] %s\n",
 			line.Spacer, line.Count, strings.Repeat("|", bar_count), line.Text)
 	}
+
+	return ExitCodeOK
 }
