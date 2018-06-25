@@ -28,6 +28,7 @@ type Line struct {
 
 func (c *CLI) Run(args []string) int {
 	var version bool
+	var max uint64
 	flags := flag.NewFlagSet("c2g", flag.ContinueOnError)
 	flags.SetOutput(c.errStream)
 	flags.BoolVar(&version, "version", false, "Print version information and quit")
@@ -41,24 +42,15 @@ func (c *CLI) Run(args []string) int {
 		return ExitCodeOK
 	}
 
-	var max uint64
 	lines := make([]Line, 0, 1024)
-	scanner := bufio.NewScanner(os.Stdin)
-	rep := regexp.MustCompile(`^(\s*)([0-9]+) (.*)$`)
-	for scanner.Scan() {
-		line := rep.FindSubmatch([]byte(scanner.Text()))
-		spacer := string(line[1])
-		count, err := strconv.ParseUint(string(line[2]), 10, 64)
-		if err != nil {
-			fmt.Println("err", err)
-			os.Exit(1)
-		}
-		text := string(line[3])
+	if err := Parser(os.Stdin, &lines); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
-		lines = append(lines, Line{Spacer: spacer, Count: count, Text: text})
-
-		if count > max {
-			max = count
+	for _, i := range lines {
+		if max < i.Count {
+			max = i.Count
 		}
 	}
 
@@ -69,4 +61,22 @@ func (c *CLI) Run(args []string) int {
 	}
 
 	return ExitCodeOK
+}
+
+func Parser(stdin io.Reader, lines *[]Line) error {
+	scanner := bufio.NewScanner(stdin)
+	rep := regexp.MustCompile(`^(\s*)([0-9]+) (.*)$`)
+	for scanner.Scan() {
+		line := rep.FindSubmatch([]byte(scanner.Text()))
+		spacer := string(line[1])
+		count, err := strconv.ParseUint(string(line[2]), 10, 64)
+		if err != nil {
+			return fmt.Errorf("%s", "Parse Error")
+		}
+		text := string(line[3])
+
+		*lines = append(*lines, Line{Spacer: spacer, Count: count, Text: text})
+	}
+
+	return nil
 }
