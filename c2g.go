@@ -54,11 +54,7 @@ func (c *CLI) Run(args []string) int {
 		}
 	}
 
-	for _, line := range lines {
-		bar_count := int(line.Count * 30 / max)
-		fmt.Printf("%s%d [%-30s] %s\n",
-			line.Spacer, line.Count, strings.Repeat("|", bar_count), line.Text)
-	}
+	PrintGraph(os.Stdout, lines, max)
 
 	return ExitCodeOK
 }
@@ -79,4 +75,12 @@ func Parser(stdin io.Reader, lines *[]Line) error {
 	}
 
 	return nil
+}
+
+func PrintGraph(stdout io.Writer, lines []Line, max uint64) {
+	for _, line := range lines {
+		bar_count := int(line.Count * 30 / max)
+		fmt.Fprintf(stdout, "%s%d [%-30s] %s\n",
+			line.Spacer, line.Count, strings.Repeat("|", bar_count), line.Text)
+	}
 }
