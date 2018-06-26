@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,10 +12,12 @@ import (
 
 const (
 	ExitCodeOK = iota
+	ExitCodeParseError
 	ExitCodeParseFlagError
 )
 
 type CLI struct {
+	inStream             io.Reader
 	outStream, errStream io.Writer
 }
 
@@ -43,9 +44,8 @@ func (c *CLI) Run(args []string) int {
 	}
 
 	lines := make([]Line, 0, 1024)
-	if err := Parser(os.Stdin, &lines); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	if err := Parser(c.inStream, &lines); err != nil {
+		return ExitCodeParseError
 	}
 
 	for _, i := range lines {
@@ -54,7 +54,7 @@ func (c *CLI) Run(args []string) int {
 		}
 	}
 
-	PrintGraph(os.Stdout, lines, max)
+	PrintGraph(c.outStream, lines, max)
 
 	return ExitCodeOK
 }
