@@ -1,5 +1,7 @@
 # c2go
 
+[![Build Status](https://travis-ci.org/akichan22/c2go.svg?branch=master)](https://travis-ci.org/akichan22/c2go)
+
 Visualizing `uniq -c` result
 
 ## Description
