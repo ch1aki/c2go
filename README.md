@@ -14,6 +14,19 @@ c2go is a project to make the alternative of [c2g.rb](https://gist.github.com/ei
 
 ## Install
 
+### macOS
+
+Homebrew
+
+```
+brew tap akichan22/homebrew-c2go
+brew install c2go
+```
+
+### Other platforms
+
+Download binary from release page or `go get` command.
+
 ```bash
 $ go get github.com/akichan22/c2go
 ```
