@@ -1,6 +1,6 @@
 # c2go
 
-[![Build Status](https://travis-ci.org/akichan22/c2go.svg?branch=master)](https://travis-ci.org/akichan22/c2go)
+[![Build Status](https://travis-ci.org/ch1aki/c2go.svg?branch=master)](https://travis-ci.org/ch1aki/c2go)
 
 Visualizing `uniq -c` result
 
@@ -19,7 +19,7 @@ c2go is a project to make the alternative of [c2g.rb](https://gist.github.com/ei
 Homebrew
 
 ```
-brew tap akichan22/homebrew-c2go
+brew tap ch1aki/homebrew-c2go
 brew install c2go
 ```
 
@@ -28,5 +28,5 @@ brew install c2go
 Download binary from release page or `go get` command.
 
 ```bash
-$ go get github.com/akichan22/c2go
+$ go get github.com/ch1aki/c2go
 ```
