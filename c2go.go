@@ -30,9 +30,14 @@ type Line struct {
 func (c *CLI) Run(args []string) int {
 	var version bool
 	var max uint64
+	var total uint64
+	var totalFlag bool
+	var target uint64
+
 	flags := flag.NewFlagSet("c2g", flag.ContinueOnError)
 	flags.SetOutput(c.errStream)
 	flags.BoolVar(&version, "version", false, "Print version information and quit")
+	flags.BoolVar(&totalFlag, "total", false, "Print a bar graph of percentage in a relative to total.")
 
 	if err := flags.Parse(args[1:]); err != nil {
 		return ExitCodeParseFlagError
@@ -52,9 +57,16 @@ func (c *CLI) Run(args []string) int {
 		if max < i.Count {
 			max = i.Count
 		}
+		total += i.Count
 	}
 
-	PrintGraph(c.outStream, lines, max)
+	if totalFlag {
+		target = total
+	} else {
+		target = max
+	}
+
+	PrintGraph(c.outStream, lines, target)
 
 	return ExitCodeOK
 }
@@ -77,9 +89,9 @@ func Parser(stdin io.Reader, lines *[]Line) error {
 	return nil
 }
 
-func PrintGraph(stdout io.Writer, lines []Line, max uint64) {
+func PrintGraph(stdout io.Writer, lines []Line, target uint64) {
 	for _, line := range lines {
-		bar_count := int(line.Count * 30 / max)
+		bar_count := int(line.Count * 30 / target)
 		fmt.Fprintf(stdout, "%s%d [%-30s] %s\n",
 			line.Spacer, line.Count, strings.Repeat("|", bar_count), line.Text)
 	}
