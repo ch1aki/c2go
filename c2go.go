@@ -116,9 +116,9 @@ func PrintGraph(stdout io.Writer, lines []Line, target uint64, length int, verbo
 	} else {
 		format := fmt.Sprintf("%s%d%s", "%s%d [%-", length, "s] %s\n")
 		for _, line := range lines {
-			bar_count := int(line.Count * uint64(length) / target)
+			barCount := int(line.Count * uint64(length) / target)
 			fmt.Fprintf(stdout, format,
-				line.Spacer, line.Count, strings.Repeat("|", bar_count), line.Text)
+				line.Spacer, line.Count, strings.Repeat("|", barCount), line.Text)
 		}
 	}
 }
