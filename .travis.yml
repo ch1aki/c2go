@@ -1,6 +1,6 @@
 language: go
 go:
-  - 1.10.3
+  - 1.11.x
 before_deploy:
   - go get -u github.com/Songmu/goxz/cmd/goxz
   - mkdir -p $TRAVIS_BUILD_DIR/dist
@@ -12,6 +12,6 @@ deploy:
     secure: lIUdRgN98eSdYQsHgH/8XBmX93zCF3f9O15X0cGoxu514mmJc2ZYDjRRuy9Do4yrY9ekKWyv+PYxuBUMMn03vHsZA9m9y1ylE2cuK4cjSgS00Wh1MWbF9g0mAeIsoBeTDRjS9/RmS911x/TGk20E1Q87vLBjgGy4NJpk8Wu0FP4luWFjh4CAtXQZ8+gDtnHb7hTrEE1W50jwRzBQOzKEmjTpWTia4WoFCGA5AKt6FKrgbgGUfARChRJRJv1RL/dtDw8KVdN3CWedKBoGIcpw3ilVhoUk1eKxXRLpZRkt6r62a8gXh1XMEmP2yt4OroWFaxQRmRtmOTgMg/bdsLaxxCKNBZlspn+1jJtm45xP45RI+ey/cIS9AmmFRlvMFTKVB5AGFq3LAsfHWq9TiyW6A5BQnIxEDG5jadM/ynD5kMjoo40V5Om6jVNBeJS2Xz1By3mR9w4J7euf4W88qOzHEWubWbQWO/qcJO1eFaPx93NXY39Fc4ByBknyEdSmWS/YqYHTG+aGqYuo6GVMCgVhh8vFM/D6N6B5fI69Edxy2z2zI90H7ppF4vgPSLs2e+UDB8gDFfxo4HRlc85n2lioR849WDWoIoOv+mgzWKifBLPsBBXmeFsId1y5zlMMBjxCX2gPfbOPXC0J6iak8OV8NO7dUKpuAAjSfdCjdDUVpow=
   file: "$TRAVIS_BUILD_DIR/dist/**/*.{tar.gz,zip}"
   on:
-    repo: akichan22/c2go
+    repo: ch1aki/c2go
     tags: true
     condition: "$TRAVIS_TAG =~ ^v[0-9].*$"
