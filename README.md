@@ -1,6 +1,6 @@
 # c2go
 
-[![Build Status](https://travis-ci.org/ch1aki/c2go.svg?branch=master)](https://travis-ci.org/ch1aki/c2go)
+[![Build Status](https://cloud.drone.io/api/badges/ch1aki/c2go/status.svg)](https://cloud.drone.io/ch1aki/c2go)
 
 Visualizing `uniq -c` result
 
