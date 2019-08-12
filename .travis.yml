@@ -1,6 +1,6 @@
 language: go
 go:
-  - 1.10.3
+  - 1.11.x
 before_deploy:
   - go get -u github.com/Songmu/goxz/cmd/goxz
   - mkdir -p $TRAVIS_BUILD_DIR/dist
