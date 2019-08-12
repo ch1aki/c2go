@@ -1,0 +1,35 @@
+kind: pipeline
+name: default
+
+workspace:
+  base: /go
+  path: src/github.com/ch1aki/c2go
+
+when_tagged: &when_tagged
+  when:
+    event: tag
+  ref:
+    include:
+      - refs/tags/v*.*.*
+
+steps:
+- name: test
+  image: golang
+  commands:
+  - go get
+  - go test
+
+- name: build
+  image: golang
+  commands:
+  - go get github.com/Songmu/goxz/cmd/goxz
+  - goxz -d dist/${DRONE_TAG} -z -os windows,darwin,linux -arch amd64
+  <<: *when_tagged
+
+- name: publish
+  image: plugins/github-release
+  settings:
+    api_key:
+      from_secret: github_token
+    files: dist/${DRONE_TAG}/*
+  <<: *when_tagged
