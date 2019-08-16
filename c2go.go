@@ -33,11 +33,15 @@ func (c *CLI) Run(args []string) int {
 	var total uint64
 	var totalFlag bool
 	var target uint64
+	var length int
+	var verbose bool
 
 	flags := flag.NewFlagSet("c2g", flag.ContinueOnError)
 	flags.SetOutput(c.errStream)
 	flags.BoolVar(&version, "version", false, "Print version information and quit")
 	flags.BoolVar(&totalFlag, "total", false, "Print a bar graph of percentage in a relative to total.")
+	flags.IntVar(&length, "length", 30, "Specify length of bar graph.")
+	flags.BoolVar(&verbose, "verbose", false, "Verbose mode.")
 
 	if err := flags.Parse(args[1:]); err != nil {
 		return ExitCodeParseFlagError
@@ -66,7 +70,14 @@ func (c *CLI) Run(args []string) int {
 		target = max
 	}
 
-	PrintGraph(c.outStream, lines, target)
+	switch {
+	case length > 100:
+		length = 100
+	case length < 10:
+		length = 10
+	}
+
+	PrintGraph(c.outStream, lines, target, length, verbose)
 
 	return ExitCodeOK
 }
@@ -89,10 +100,25 @@ func Parser(stdin io.Reader, lines *[]Line) error {
 	return nil
 }
 
-func PrintGraph(stdout io.Writer, lines []Line, target uint64) {
-	for _, line := range lines {
-		bar_count := int(line.Count * 30 / target)
-		fmt.Fprintf(stdout, "%s%d [%-30s] %s\n",
-			line.Spacer, line.Count, strings.Repeat("|", bar_count), line.Text)
+func PrintGraph(stdout io.Writer, lines []Line, target uint64, length int, verbose bool) {
+
+	if verbose {
+		for _, line := range lines {
+			barCount := int(line.Count * uint64(length) / target)
+			percentage := int(line.Count * 100 / target)
+			var graph strings.Builder
+			graph.WriteString(strings.Repeat("|", barCount))
+			graph.WriteString(strings.Repeat(" ", length-barCount))
+
+			fmt.Fprintf(stdout, "%s%d [%s%d] %s\n",
+				line.Spacer, line.Count, graph.String()[:length-len(strconv.Itoa(percentage))], percentage, line.Text)
+		}
+	} else {
+		format := fmt.Sprintf("%s%d%s", "%s%d [%-", length, "s] %s\n")
+		for _, line := range lines {
+			barCount := int(line.Count * uint64(length) / target)
+			fmt.Fprintf(stdout, format,
+				line.Spacer, line.Count, strings.Repeat("|", barCount), line.Text)
+		}
 	}
 }
