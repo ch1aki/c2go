@@ -1,10 +1,6 @@
 kind: pipeline
 name: default
 
-workspace:
-  base: /go
-  path: src/github.com/ch1aki/c2go
-
 steps:
 - name: fetch
   image: docker:git
@@ -17,10 +13,9 @@ steps:
     - name: deps
       path: /go
   commands:
-  - go get
-  - go test
+  - go test -race -v ./... -cover
 
-- name: build
+- name: release
   image: golang
   environment:
     GITHUB_TOKEN:
