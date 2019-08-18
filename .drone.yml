@@ -5,31 +5,34 @@ workspace:
   base: /go
   path: src/github.com/ch1aki/c2go
 
-when_tagged: &when_tagged
-  when:
-    event: tag
-  ref:
-    include:
-      - refs/tags/v*.*.*
-
 steps:
+- name: fetch
+  image: docker:git
+  commands:
+    - git fetch --tags
+
 - name: test
   image: golang
+  volumes:
+    - name: deps
+      path: /go
   commands:
   - go get
   - go test
 
 - name: build
   image: golang
-  commands:
-  - go get github.com/Songmu/goxz/cmd/goxz
-  - goxz -d dist/${DRONE_TAG} -z -os windows,darwin,linux -arch amd64
-  <<: *when_tagged
-
-- name: publish
-  image: plugins/github-release
-  settings:
-    api_key:
+  environment:
+    GITHUB_TOKEN:
       from_secret: github_token
-    files: dist/${DRONE_TAG}/*
-  <<: *when_tagged
+  volumes:
+    - name: deps
+      path: /go
+  commands:
+    - curl -sL https://git.io/goreleaser | bash
+  when:
+    event: tag
+
+volumes:
+  - name: deps
+    temp: {}
